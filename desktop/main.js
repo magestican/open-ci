@@ -1,5 +1,5 @@
 'use strict';
-var windowController = require("./desktop/controllers/windowController");
+var windowController = require("./controllers/windowController");
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
@@ -12,7 +12,8 @@ let mainWindow;
 
 
 function createWindow () {
-   mainWindow = windowController.init(mainWindow);
+   mainWindow = windowController.init(mainWindow,BrowserWindow);
+   
 }
 
 // This method will be called when Electron has finished

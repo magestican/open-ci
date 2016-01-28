@@ -4,7 +4,7 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron desktop/main.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/atom/electron-quick-start#readme",
   "dependencies": {
+    "electron-debug": "^0.5.1",
     "electron-prebuilt": "^0.36.0"
   }
 }
