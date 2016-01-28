@@ -14,7 +14,8 @@ scriptsSupported = [{
   executable: "powershell.exe"
 }, {
   extension: "bat",
-  executable: "cmd.exe"
+  executable: "cmd.exe",
+  helperCommand: '/c'
 }]
 
 fileSystemHelper.walk(configDump, function(err, results) {
@@ -22,14 +23,15 @@ fileSystemHelper.walk(configDump, function(err, results) {
     console.log(err)
   else
     for (var i in results) {
-      for (var x in scriptsSupported)
+      for (var x in scriptsSupported) {
         var supported = scriptsSupported[x];
-      var file = results[i];
-      if (file.indexOf(.extension) > -1) {
-        filesToExecute.push({
-          RUN: supported.executable,
-          THISFILE: file
-        });
+        var file = results[i];
+        if (file.indexOf(supported.extension) > -1) {
+          filesToExecute.push({
+            RUN: supported.executable,
+            THISFILE: (supported.helperCommand != undefined ? [supported.helperCommand, file] : [file])
+          });
+        }
       }
     }
 })
@@ -37,21 +39,21 @@ fileSystemHelper.walk(configDump, function(err, results) {
 module.exports = {
   run: function() {
 
-    for (var runthis in filesToExecute) {
-      if (object.hasOwnProperty(script)) {
+    for (var i in filesToExecute) {
+      var script = filesToExecute[i];
+      console.log(script);
+      child = spawn(script.RUN, script.THISFILE);
+      child.stdout.on("data", function(data) {
+        console.log("Data: " + data);
+      });
+      child.stderr.on("data", function(data) {
+        console.log("Errors: " + data);
+      });
+      child.on("exit", function() {
+        console.log("Script finished");
+      });
+      child.stdin.end(); //end input
 
-        child = spawn(script.RUN, script.THISFILE);
-        child.stdout.on("data", function(data) {
-          console.log("Data: " + data);
-        });
-        child.stderr.on("data", function(data) {
-          console.log("Errors: " + data);
-        });
-        child.on("exit", function() {
-          console.log("Script finished");
-        });
-        child.stdin.end(); //end input
-      }
     }
 
   }
